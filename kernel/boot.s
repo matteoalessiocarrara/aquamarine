@@ -70,7 +70,7 @@ _start:
 	# aligned above and we've since pushed a multiple of 16 bytes to the
 	# stack since (pushed 0 bytes so far) and the alignment is thus
 	# preserved and the call is well defined.
-	call kernel_main
+	call kmain
 
 	# If the system has nothing more to do, put the computer into an
 	# infinite loop. To do that:
