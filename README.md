@@ -1,7 +1,8 @@
-# Attenzione: lavori in corso
+# Aquamarine
+A monolithic microkernel
 
-## Per aggiornamenti
+## News & updates
 
-È possibile iscriversi al canale [telegram](https://telegram.me/matteoalessiocarrara) 
-od alla comoda pagina [facebook](https://www.facebook.com/matteoalessiocarrara).
+ * [telegram](https://telegram.me/matteoalessiocarrara) 
+ * [facebook](https://www.facebook.com/matteoalessiocarrara)
 
