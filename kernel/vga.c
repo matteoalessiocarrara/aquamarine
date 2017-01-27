@@ -27,9 +27,8 @@ vga_make_char(unsigned char c, vga_color_pair color)
 void
 term_clear()
 {
-	for (size_t y = 0; y < TERM_HEIGHT; y++)
-		for (size_t x = 0; x < TERM_WIDTH; x++)
-			VGA_MEM[y * TERM_WIDTH + x] = vga_make_char(' ', term_color);
+	for (size_t i = 0; i < (TERM_WIDTH * TERM_HEIGHT); i++)
+			VGA_MEM[i] = vga_make_char(' ', term_color);
 }
 
 
@@ -72,7 +71,7 @@ term_get_cursor_x()
 inline size_t
 term_get_cursor_y()
 {
-	return term_cursor / TERM_HEIGHT;
+	return term_cursor / TERM_WIDTH;
 }
 
 
