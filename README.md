@@ -1,5 +1,5 @@
 # Aquamarine
-A monolithic microkernel
+Tiny x86 kernel
 
 ## News & updates
 
