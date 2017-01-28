@@ -2,14 +2,23 @@
 
 HOST = i686-elf
 CFLAGS = -ffreestanding -O2 -std=gnu99 -Wall -Wextra
+
 AS = $(HOST)-as
 CC = $(HOST)-gcc
-KF = aquamarine.bin
-OBJS = kernel.o vga.o boot.o
 
+KNAME = aquamarine
+KF = $(KNAME).bin
+KISO = $(KNAME).iso
+ISOROOT = ../iso/
+OBJS = kernel.o tty.o boot.o
 
 qemu: $(KF)
 	qemu-system-x86_64 -kernel $(KF)
+	
+
+iso: $(KF)
+	cp $(KF) $(ISOROOT)/boot
+	grub-mkrescue -o $(KISO) $(ISOROOT)
 
 
 tmh: $(KF)
@@ -24,8 +33,8 @@ kernel.o: kernel.c
 	$(CC) -c kernel.c -o kernel.o  $(CFLAGS)
 	
 
-vga.o: vga.c vga.h
-	$(CC) -c vga.c -o vga.o  $(CFLAGS)
+tty.o: tty.c tty.h
+	$(CC) -c tty.c -o tty.o  $(CFLAGS)
 
 
 boot.o: boot.s
@@ -33,4 +42,5 @@ boot.o: boot.s
 
 
 clean:
-	rm -f $(KF) *.o
+	rm -f $(KF) $(KISO) *.o
+	rm -f $(ISOROOT)/boot/$(KF)
