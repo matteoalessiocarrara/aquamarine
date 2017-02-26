@@ -1,46 +1,39 @@
 # Copyright 2017 Matteo Alessio Carrara <sw.matteoac@gmail.com>
 
 HOST = i686-elf
-CFLAGS = -ffreestanding -O2 -std=gnu99 -Wall -Wextra
 
 AS = $(HOST)-as
 CC = $(HOST)-gcc
 
+CFLAGS = -ffreestanding -O2 -std=gnu99 -Wall -Wextra
 KNAME = aquamarine
-KF = $(KNAME).bin
+KBIN = $(KNAME).bin
 KISO = $(KNAME).iso
 ISOROOT = ../iso/
-OBJS = kernel.o tty.o boot.o
+OBJS = boot.o vga_console.o kernel.o
 
-qemu: $(KF)
-	qemu-system-x86_64 -kernel $(KF)
+
+$(KBIN): $(OBJS)
+	$(CC) -T linker.ld $(CFLAGS) -nostdlib -lgcc -o $(KBIN) $(OBJS)
 	
-
-iso: $(KF)
-	cp $(KF) $(ISOROOT)/boot
-	grub-mkrescue -o $(KISO) $(ISOROOT)
-
-
-tmh: $(KF)
-	grub-file --is-x86-multiboot $(KF) && echo "this is a valid multiboot kernel" || echo "invalid multiboot header"
-
-
-$(KF): $(OBJS)
-	$(CC) -T linker.ld -o $(KF) $(CFLAGS) -nostdlib -lgcc $(OBJS)
-
-
 kernel.o: kernel.c
 	$(CC) -c kernel.c -o kernel.o  $(CFLAGS)
-	
 
-tty.o: tty.c tty.h
-	$(CC) -c tty.c -o tty.o  $(CFLAGS)
-
+vga_console.o: vga_console.c vga_console.h
+	$(CC) -c vga_console.c -o vga_console.o  $(CFLAGS)
 
 boot.o: boot.s
 	$(AS) boot.s -o boot.o
 
-
 clean:
-	rm -f $(KF) $(KISO) *.o
-	rm -f $(ISOROOT)/boot/$(KF)
+	rm -f $(KBIN) $(KISO) $(ISOROOT)/boot/$(KBIN) $(OBJS)
+
+qemu: $(KBIN)
+	qemu-system-x86_64 -kernel $(KBIN)
+	
+iso: $(KBIN)
+	cp $(KBIN) $(ISOROOT)/boot
+	grub-mkrescue -o $(KISO) $(ISOROOT)
+
+tmh: $(KBIN)
+	grub-file --is-x86-multiboot $(KBIN) && echo "this is a valid multiboot kernel" || echo "invalid multiboot header"
