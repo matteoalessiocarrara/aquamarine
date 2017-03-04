@@ -31,6 +31,13 @@ enum vga_color {
 	VGA_COLOR_WHITE = 15
 };
 
+uint8_t vga_color;
+size_t vga_cursor; // offset
+
+void vga_init();
+void vga_scroll();
+void vga_writes(const char *s);
+
 inline uint16_t vga_make_char(unsigned char c, uint8_t color_pair) {
 	return (uint16_t) c | (uint16_t) color_pair << 8;
 }
@@ -42,8 +49,11 @@ inline uint8_t vga_color_pair(uint8_t fg, uint8_t bg) {
 	return fg | bg << 4;
 }
 
-void vga_init();
-void vga_writec(const char c);
-void vga_writes(const char *s);
+inline void vga_writec(const char c) {
+	VGA_BUFF[vga_cursor++] = vga_make_char(c, vga_color);
+	if (vga_cursor == VGA_CHARS) vga_scroll();
+}
+
+
 
 # endif
