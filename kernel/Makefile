@@ -5,7 +5,7 @@ HOST = i686-elf
 AS = $(HOST)-as
 CC = $(HOST)-gcc
 
-CFLAGS = -ffreestanding -O2 -std=gnu99 -Wall -Wextra
+CFLAGS = -ffreestanding -O2 -g -std=gnu99 -Wall -Wextra
 KNAME = aquamarine
 KBIN = $(KNAME).bin
 KISO = $(KNAME).iso
