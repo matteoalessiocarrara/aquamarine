@@ -10,7 +10,7 @@ KNAME = aquamarine
 KBIN = $(KNAME).bin
 KISO = $(KNAME).iso
 ISOROOT = ../iso/
-OBJS = boot/boot.o dev/vga_console.o kernel.o
+OBJS = boot/boot.o dev/vga_console.o kernel.o lib/printk.o
 
 
 $(KBIN): $(OBJS)
@@ -25,6 +25,9 @@ dev/vga_console.o: dev/vga_console.c dev/vga_console.h
 boot/boot.o: boot/boot.s
 	$(AS) boot/boot.s -o boot/boot.o
 
+lib/printk.o: lib/printk.h lib/printk.c
+	$(CC) -c lib/printk.c -o lib/printk.o $(CFLAGS)
+	
 clean:
 	rm -f $(KBIN) $(KISO) $(ISOROOT)/boot/$(KBIN) $(OBJS)
 

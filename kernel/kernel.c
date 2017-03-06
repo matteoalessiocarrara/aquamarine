@@ -1,4 +1,5 @@
 # include "dev/vga_console.h"
+# include "lib/printk.h"
 
 # if defined(__linux__)
 # error "You are not using a cross-compiler, you will most certainly run into trouble"
@@ -12,5 +13,5 @@
 void kmain()
 {
 	vga_init();
-	vga_writes("Hello world!");
+	printkv("Hello world! %b", 1, 15);
 }
