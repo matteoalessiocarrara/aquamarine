@@ -31,6 +31,11 @@ enum vga_color {
 	VGA_COLOR_WHITE = 15
 };
 
+struct vga_entry {
+	uint8_t c;
+	uint8_t attr;
+};
+
 uint8_t vga_color;
 size_t vga_cursor; // offset
 
@@ -38,20 +43,14 @@ void vga_init();
 void vga_scroll();
 void vga_writes(const char *s);
 
-inline uint16_t vga_make_char(unsigned char c, uint8_t color_pair) {
-	return (uint16_t) c | (uint16_t) color_pair << 8;
-}
-
 inline uint8_t vga_color_pair(uint8_t fg, uint8_t bg) {
-	// WARNING: Depending on the mode setup, attribute bit 7 may be either the 
-	// blink bit or the fourth background color bit (which allows all 16 colors 
-	// to be used as background colours).
 	return fg | bg << 4;
 }
 
 inline void vga_writec(const char c) {
-	VGA_BUFF[vga_cursor++] = vga_make_char(c, vga_color);
-	if (vga_cursor == VGA_CHARS) vga_scroll();
+	((struct vga_entry*)(VGA_BUFF + vga_cursor))->c = c;
+	((struct vga_entry*)(VGA_BUFF + vga_cursor))->attr = vga_color;
+	if (++vga_cursor == VGA_CHARS) vga_scroll();
 }
 
 
