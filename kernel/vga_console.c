@@ -8,7 +8,7 @@
 
 
 void vga_init() {
-	vga_color = vga_color_pair(VGA_COLOR_WHITE, VGA_COLOR_CYAN);
+	vga_color = (struct s_vga_color){.fg = VGA_COLOR_WHITE, .bg = VGA_COLOR_CYAN};
 	for (register uint16_t i = 0; i < VGA_CHARS; i++) vga_writec(' ');
 	vga_cursor = 0;
 }
@@ -18,7 +18,7 @@ void vga_scroll() {
 	*(struct s*)VGA_BUFF = *(struct s*)(VGA_BUFF + VGA_WIDTH);
 	for(register uint8_t i = 0; i < VGA_WIDTH; i++) {
 		((struct vga_entry*)(VGA_BUFF + VGA_CHARS - VGA_WIDTH + i))->c = ' ';
-		((struct vga_entry*)(VGA_BUFF + VGA_CHARS - VGA_WIDTH + i))->attr = vga_color;
+		((struct vga_entry*)(VGA_BUFF + VGA_CHARS - VGA_WIDTH + i))->color = vga_color;
 	}
 	vga_cursor = VGA_CHARS - VGA_WIDTH;
 }

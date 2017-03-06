@@ -12,7 +12,7 @@
 # define VGA_CHARS (VGA_WIDTH * VGA_HEIGHT)
 # define VGA_BUFF ((uint16_t *) 0xB8000)
 
-enum vga_color {
+enum e_vga_color {
 	VGA_COLOR_BLACK = 0,
 	VGA_COLOR_BLUE = 1,
 	VGA_COLOR_GREEN = 2,
@@ -31,28 +31,27 @@ enum vga_color {
 	VGA_COLOR_WHITE = 15
 };
 
-struct vga_entry {
-	uint8_t c;
-	uint8_t attr;
+struct s_vga_color {
+	uint8_t fg : 4;
+	uint8_t bg : 4;
 };
 
-uint8_t vga_color;
-size_t vga_cursor; // offset
+struct vga_entry {
+	char c;
+	struct s_vga_color color;
+};
+
+struct s_vga_color vga_color;
+uint16_t vga_cursor; // offset
 
 void vga_init();
 void vga_scroll();
 void vga_writes(const char *s);
 
-inline uint8_t vga_color_pair(uint8_t fg, uint8_t bg) {
-	return fg | bg << 4;
-}
-
 inline void vga_writec(const char c) {
 	((struct vga_entry*)(VGA_BUFF + vga_cursor))->c = c;
-	((struct vga_entry*)(VGA_BUFF + vga_cursor))->attr = vga_color;
+	((struct vga_entry*)(VGA_BUFF + vga_cursor))->color = vga_color;
 	if (++vga_cursor == VGA_CHARS) vga_scroll();
 }
-
-
 
 # endif
