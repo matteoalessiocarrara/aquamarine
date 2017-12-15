@@ -10,24 +10,18 @@ KNAME = aquamarine
 KBIN = $(KNAME).bin
 KISO = $(KNAME).iso
 ISOROOT = ../iso/
-OBJS = boot/boot.o dev/vga_console.o kernel.o lib/printk.o
+OBJS = boot.o kernel.o
 
 
 $(KBIN): $(OBJS)
-	$(CC) -T boot/linker.ld $(CFLAGS) -nostdlib -lgcc -o $(KBIN) $(OBJS)
+	$(CC) -T linker.ld $(CFLAGS) -nostdlib -lgcc -o $(KBIN) $(OBJS)
 	
 kernel.o: kernel.c
-	$(CC) -c kernel.c -o kernel.o  $(CFLAGS)
+	$(CC) -c kernel.c -o kernel.o $(CFLAGS)
 
-dev/vga_console.o: dev/vga_console.c dev/vga_console.h
-	$(CC) -c dev/vga_console.c -o dev/vga_console.o  $(CFLAGS)
+boot.o: boot.s
+	$(AS) boot.s -o boot.o
 
-boot/boot.o: boot/boot.s
-	$(AS) boot/boot.s -o boot/boot.o
-
-lib/printk.o: lib/printk.h lib/printk.c
-	$(CC) -c lib/printk.c -o lib/printk.o $(CFLAGS)
-	
 clean:
 	rm -f $(KBIN) $(KISO) $(ISOROOT)/boot/$(KBIN) $(OBJS)
 
@@ -39,4 +33,6 @@ iso: $(KBIN)
 	grub-mkrescue -o $(KISO) $(ISOROOT)
 
 tmh: $(KBIN)
-	grub-file --is-x86-multiboot $(KBIN) && echo "this is a valid multiboot kernel" || echo "invalid multiboot header"
+	grub-file --is-x86-multiboot $(KBIN) && \
+		echo "this is a valid multiboot kernel" || \
+		echo "invalid multiboot header"
